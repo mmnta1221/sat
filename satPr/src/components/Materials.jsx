@@ -4,7 +4,7 @@ import './Materials.scss';
 export default function Materials() {
   return (
     <div className="container">
-      {/* Главный блок */}
+
       <div className="banner">
         <h1 className="t1">Учебные материалы</h1>
         <p className="t2">
@@ -17,7 +17,6 @@ export default function Materials() {
         </div>
       </div>
 
-      {/* Блок 1 */}
       <div className="block">
         <div className="top">
           <h2 className="t3"><span>📖</span> Официальные руководства</h2>
