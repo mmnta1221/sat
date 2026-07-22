@@ -1,0 +1,60 @@
+.block-practice {
+  .title-1 {
+    font-size: 32px;
+    
+    margin-bottom: 8px; color: #ffffff; 
+  }
+  .subtitle-1 { 
+    color: #8d99ae; 
+    margin-bottom: 30px; 
+  }
+  .section-title {
+    font-size: 20px; 
+    margin: 30px 0 15px 0; color: #ffffff; 
+  }
+  .grid-2 { display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px;
+   }
+
+  .card-1 {
+    background-color: #1c2541;
+    border: 1px solid #2b3a67;
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    h3 { color: #ffffff; }
+  }
+
+  .desc {
+     color: #8d99ae;
+     }
+
+  .badge-green { 
+    background: rgba(#06d6a0, 0.2); 
+    color: #06d6a0; padding: 4px 8px; 
+    border-radius: 4px; 
+    font-size: 12px; 
+  }
+  .badge-gray { 
+    background: rgba(#8d99ae, 0.2); 
+    color: #8d99ae; 
+    padding: 4px 8px; 
+    border-radius: 4px; 
+    font-size: 12px; 
+  }
+
+  .locked {
+    .lock-overlay { 
+      margin-top: 15px; 
+      font-size: 14px; 
+      color: #ff4d4d; 
+    }
+  }
+}

@@ -1,0 +1,30 @@
+.top-head {
+  height: 70px;
+  border-bottom: 1px solid #2b3a67;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+
+  .head-stats {
+    display: flex;
+    gap: 20px;
+    font-weight: 600;
+    color: #ffffff;
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+  }
+
+  .head-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #8d99ae;
+
+    .avatar-sm { width: 32px; height: 32px; background-color: #555; border-radius: 50%; }
+  }
+}

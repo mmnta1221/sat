@@ -1,0 +1,232 @@
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .banner {
+    background: linear-gradient(135deg, #16223f 0%, #111a30 100%);
+    border: 1px solid rgba(#2b3a67, 0.4);
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 40px;
+
+    .t1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+
+    .t2 {
+      font-size: 15px;
+      color: #8d99ae;
+      line-height: 1.6;
+      max-width: 600px;
+      margin-bottom: 28px;
+    }
+
+    .box-in {
+      position: relative;
+      max-width: 600px;
+
+      .icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #8d99ae;
+      }
+
+      .in2 {
+        width: 100%;
+        background: #0b1121;
+        border: 1px solid rgba(#2b3a67, 0.6);
+        color: #fff;
+        padding: 14px 14px 14px 48px;
+        border-radius: 10px;
+        outline: none;
+      }
+    }
+  }
+
+  .block {
+    margin-bottom: 44px;
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+
+      .t3 {
+        font-size: 20px;
+        color: #fff;
+      }
+
+      .link {
+        color: #4361ee;
+        font-size: 14px;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .grid1 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+
+    .card1 {
+      background: #111a36;
+      border: 1px solid rgba(#2b3a67, 0.5);
+      border-radius: 14px;
+      padding: 24px;
+      display: flex;
+      gap: 18px;
+
+      .box-icon {
+        position: relative;
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        .f1 {
+          font-size: 24px;
+        }
+
+        .f2 {
+          position: absolute;
+          font-size: 9px;
+          font-weight: 800;
+          bottom: 12px;
+          color: #fff;
+        }
+
+        &.red {
+          background: rgba(#ef233c, 0.15);
+          .f2 {
+            color: #ff4d6d;
+          }
+        }
+
+        &.blue {
+          background: rgba(#3a86ff, 0.15);
+          .f2 {
+            color: #5ea0ff;
+          }
+        }
+
+        &.green {
+          background: rgba(#06d6a0, 0.15);
+          .f2 {
+            color: #06d6a0;
+          }
+        }
+      }
+
+      .right {
+        display: flex;
+        flex-direction: column;
+
+        .name {
+          font-size: 15px;
+          color: #fff;
+          margin-bottom: 6px;
+        }
+
+        .desc {
+          font-size: 13px;
+          color: #8d99ae;
+          margin-bottom: 14px;
+        }
+
+        .info {
+          font-size: 12px;
+          color: rgba(#8d99ae, 0.7);
+        }
+      }
+    }
+  }
+
+  .grid2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+
+    .card2 {
+      background: #111a36;
+      border: 1px solid rgba(#2b3a67, 0.5);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+
+      &.border1 {
+        border-left: 3px solid #3a86ff;
+        .name2 {
+          color: #3a86ff;
+        }
+      }
+
+      &.border2 {
+        border-left: 3px solid #06d6a0;
+        .name2 {
+          color: #06d6a0;
+        }
+      }
+
+      &.border3 {
+        border-left: 3px solid #ff758f;
+        .name2 {
+          color: #ff758f;
+        }
+      }
+
+      &.border4 {
+        border-left: 3px solid #8d99ae;
+        .name2 {
+          color: #8d99ae;
+        }
+      }
+
+      .mini {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+
+        .name2 {
+          font-size: 11px;
+          font-weight: 700;
+        }
+      }
+
+      .title {
+        font-size: 16px;
+        color: #fff;
+        margin-bottom: 8px;
+      }
+
+      .desc2 {
+        font-size: 13px;
+        color: #8d99ae;
+        margin-bottom: 20px;
+        flex-grow: 1;
+      }
+
+      .btn {
+        width: 100%;
+        background: rgba(#2b3a67, 0.4);
+        border: 1px solid rgba(#2b3a67, 0.6);
+        color: #fff;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+    }
+  }
+}
