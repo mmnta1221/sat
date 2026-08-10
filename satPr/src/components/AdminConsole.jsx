@@ -58,7 +58,7 @@ export default function AdminConsole() {
             
             <div className="w6">
               <button className="btn-icon">edit</button>
-              <button className="btn-icon grey">⋮</button>
+              <button className="btn-icon2">delete</button>
             </div>
           </div>
         </div>
@@ -66,7 +66,10 @@ export default function AdminConsole() {
         <div className="bottom">
        
         </div>
+     
       </div>
+       <button className='addModule'> + </button>
+
     </div>
   );
 }

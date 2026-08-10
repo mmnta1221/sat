@@ -3,6 +3,7 @@
     "sass-embedded": "^1.100.0"
   },
   "dependencies": {
-    "react-router-dom": "^7.18.1"
+    "@supabase/supabase-js": "^2.112.1",
+    "react-router-dom": "^7.11.0"
   }
 }

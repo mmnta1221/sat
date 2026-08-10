@@ -12,7 +12,7 @@ export default function Materials() {
           гайдов до видеоуроков и удобных шпаргалок.
         </p>
         <div className="box-in">
-          <span className="icon">🔍</span>
+         
           <input type="text" placeholder="Поиск тем, формул или видео..." className="in2" />
         </div>
       </div>

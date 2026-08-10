@@ -49,12 +49,9 @@
         color: #8d99ae;
         padding: 10px 20px;
         border-radius: 8px;
-        cursor: pointer;
+  
 
-        &:hover {
-          color: #fff;
-          border-color: #3a86ff;
-        }
+     
       }
 
       .btn-blue {
@@ -144,9 +141,15 @@
         color: #fff;
         cursor: pointer;
 
-        &.grey {
-          color: #8d99ae;
-        }
+      
+      }
+       .btn-icon2 {
+        background: none;
+        border: none;
+        color: #ff0000;
+        cursor: pointer;
+
+      
       }
     }
 
@@ -160,5 +163,16 @@
 
 
     }
+    
   }
+  .addModule{
+      width: 95px;
+      height: 95px;
+      border-radius: 100%;
+      font-size: 39px;
+      background-color: #ffffff;
+      position: fixed;
+      bottom: 50px;
+      right: 215px;
+    }
 }

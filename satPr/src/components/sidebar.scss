@@ -33,7 +33,7 @@
       color: #8d99ae;
       padding: 12px 16px;
       text-align: left;
-      font-size: 16px;
+      font-size: 20px;
       border-radius: 8px;
       display: flex;
       align-items: center;
@@ -69,18 +69,20 @@
     padding-top: 15px;
 
     .avatar { 
-      width: 45px; 
-      height: 45px; 
+      width: 25px; 
+      height: 25px; 
       background-color: #555; 
-      border-radius: 50%; 
+      border-radius: 100%; 
     }
     .info h4 { 
-      font-size: 14px; 
+      font-size: 12px; 
+      margin-left: 10px;
       color: #ffffff; 
     }
     .info span { 
       color: #8d99ae; 
       font-size: 12px; 
+      margin-left: 10px;
     }
   }
 }
