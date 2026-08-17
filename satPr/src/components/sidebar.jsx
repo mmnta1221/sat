@@ -32,12 +32,17 @@ export default function Sidebar() {
          <img src={materials} alt="" />
            Materials
         </NavLink>
-
+        <NavLink to="/admin/create-module" className={({ isActive }) => `side-btn ${isActive ? 'active' : ''}`}>
+          <img src={achieve} alt="" />
+          Create Module
+        </NavLink>
         {isAdmin && (
           <NavLink to="/admin" className={({ isActive }) => `side-btn ${isActive ? 'active' : ''}`}>
              <img src={adminCon} alt="" />
              Admin Console
           </NavLink>
+
+          
         )}
       </nav>
 
