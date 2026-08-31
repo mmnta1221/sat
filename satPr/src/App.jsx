@@ -10,6 +10,7 @@ import AdminConsole from './components/AdminConsole';
 import QuestionEditor from './components/QuestionEditor';
 import CreateModule from './components/ModuleEditor'; 
 import Login from './components/Login';
+import EditModule from "./components/EditModule" 
 import './App.css';
 
 function AdminRoute({ children }) {
@@ -42,6 +43,7 @@ function MainLayout() {
             <Route path="/admin" element={<AdminRoute><AdminConsole /></AdminRoute>} />
             <Route path="/admin/editor" element={<AdminRoute><QuestionEditor /></AdminRoute>} />
             <Route path="/admin/create-module" element={<AdminRoute><CreateModule /></AdminRoute>} />
+            <Route path="/admin/edit-module" element={<AdminRoute><EditModule /></AdminRoute>} />
           </Routes>
         </div>
       </main>

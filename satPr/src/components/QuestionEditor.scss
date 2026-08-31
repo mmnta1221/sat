@@ -27,7 +27,8 @@
     background-color: #1c2541;
     border: 1px solid #2b3a67;
     border-radius: 12px;
-    padding: 24px;
+    padding: 20px;
+    
   }
   .card-2 {
     background-color: #1c2541;
@@ -63,10 +64,15 @@
   .choice {
     padding: 10px;
     border: 1px solid #2b3a67;
+    border-radius: 22px;
     border-radius: 6px;
     margin-bottom: 8px;
     color: #ffffff;
-    
+    input{
+       background: #16224400;
+    border: 0;
+    color: white;
+    }
     
   }
 }

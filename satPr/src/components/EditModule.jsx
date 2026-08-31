@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
-import './ModuleEditor.scss';
+import './EditModule.scss';
 
-export default function CreateModule() {
+export default function EditModule() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -79,7 +79,9 @@ export default function CreateModule() {
   };
 
   return (
+    
     <div className="page-box">
+       
       {errorMsg && (
         <div style={{
           padding: '12px 16px',
@@ -113,7 +115,8 @@ export default function CreateModule() {
       </div>
 
       <div className="grid-box">
-        {/* Левая колонка */}
+             
+
         <div className="left-col">
           {/* Карта 1: Basic Information */}
           <div className="card-box border-blue">
@@ -190,7 +193,7 @@ export default function CreateModule() {
               {selectedQuestions.length === 0 ? (
                 <div className="empty-box">
                   <div className="empty-title">No questions assigned yet.</div>
-                  <div className="empty-sub">
+                       <div className="empty-sub">
                     Search and select questions from the bank to build your module.
                   </div>
                   <button type="button" className="bank-btn">Browse Full Bank</button>
