@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import './EditModule.scss';
 
 export default function EditModule() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const moduleId = searchParams.get('id'); // Получаем id из URL (?id=...)
+
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
 
   // 1. Основная информация
@@ -28,10 +32,87 @@ export default function EditModule() {
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Функция отправки данных в Supabase
+  // 📥 1. Подгрузка данных редактируемого модуля из Supabase при монтировании
+  useEffect(() => {
+    if (!moduleId) {
+      setErrorMsg('Идентификатор модуля (ID) не найден в URL.');
+      setFetching(false);
+      return;
+    }
+
+    const fetchModuleData = async () => {
+      setFetching(true);
+      try {
+        // Загружаем сам модуль
+        const { data: mod, error: modError } = await supabase
+          .from('modules')
+          .select('*')
+          .eq('id', moduleId)
+          .single();
+
+        if (modError) throw modError;
+
+        if (mod) {
+          setTitle(mod.title || '');
+          setCategory(mod.category?.toLowerCase().includes('reading') ? 'reading' : 'math');
+          setModuleType(mod.module_type || 'practice');
+          setDifficulty(mod.difficulty || 'Moderate');
+          setEstTime(mod.est_time_minutes || 35);
+          setTargetMin(mod.target_score_min || '');
+          setTargetMax(mod.target_score_max || '');
+          setIsVisible(mod.is_visible_to_students ?? true);
+          setRequiresPrereq(mod.requires_prerequisite ?? false);
+          setTimedEnforced(mod.timed_mode_enforced ?? false);
+        }
+
+        // Загружаем привязанные к этому модулю вопросы
+        const { data: qData, error: qError } = await supabase
+          .from('questions')
+          .select('*')
+          .eq('module_id', moduleId);
+
+        if (!qError && qData) {
+          setSelectedQuestions(qData);
+        }
+      } catch (err) {
+        console.error('Ошибка загрузки модуля:', err);
+        setErrorMsg('Не удалось загрузить данные модуля: ' + err.message);
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    fetchModuleData();
+  }, [moduleId]);
+
+  // 🗑️ 2. Обработка удаления вопроса (из Supabase и локального списка)
+  const handleDeleteQuestion = async (qId, indexInState) => {
+    if (qId) {
+      try {
+        const { error } = await supabase
+          .from('questions')
+          .delete()
+          .eq('id', qId);
+
+        if (error) throw error;
+      } catch (err) {
+        console.error('Ошибка удаления вопроса:', err);
+        alert('Не удалось удалить вопрос из БД: ' + err.message);
+        return;
+      }
+    }
+    setSelectedQuestions(prev => prev.filter((_, idx) => idx !== indexInState));
+  };
+
+  // 💾 3. Сохранение (ОБНОВЛЕНИЕ) модуля в Supabase
   const handleSaveModule = async (isPublish = false) => {
     if (!title.trim()) {
       setErrorMsg('Пожалуйста, введите название модуля.');
+      return;
+    }
+
+    if (!moduleId) {
+      setErrorMsg('Отсутствует ID модуля для обновления.');
       return;
     }
 
@@ -59,29 +140,34 @@ export default function EditModule() {
     };
 
     try {
-      const { data, error } = await supabase
+      // ИСПОЛЬЗУЕМ .update() ВМЕСТО .insert()
+      const { error } = await supabase
         .from('modules')
-        .insert([payload])
-        .select();
+        .update(payload)
+        .eq('id', moduleId);
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
-      // После успешного сохранения переходим к каталогу
-      navigate('/practice');
+      // Переход назад к админке или практике
+      navigate('/admin'); 
     } catch (err) {
-      console.error('Ошибка сохранения модуля:', err);
-      setErrorMsg(err.message || 'Не удалось сохранить модуль.');
+      console.error('Ошибка обновления модуля:', err);
+      setErrorMsg(err.message || 'Не удалось обновить модуль.');
     } finally {
       setLoading(false);
     }
   };
 
+  if (fetching) {
+    return (
+      <div style={{ padding: '40px', textAlign: 'center', color: '#8d99ae' }}>
+        Загрузка данных модуля...
+      </div>
+    );
+  }
+
   return (
-    
     <div className="page-box">
-       
       {errorMsg && (
         <div style={{
           padding: '12px 16px',
@@ -98,6 +184,7 @@ export default function EditModule() {
       <div className="top-row">
         <div className="btn-group">
           <button 
+            type="button"
             className="btn-draft" 
             onClick={() => handleSaveModule(false)}
             disabled={loading}
@@ -105,20 +192,19 @@ export default function EditModule() {
             {loading ? 'Сохранение...' : 'Save Draft'}
           </button>
           <button 
+            type="button"
             className="btn-publish" 
             onClick={() => handleSaveModule(true)}
             disabled={loading}
           >
-            {loading ? 'Публикация...' : '↑ Publish Module'}
+            {loading ? 'Обновление...' : '↑ Publish Module'}
           </button>
         </div>
       </div>
 
       <div className="grid-box">
-             
-
         <div className="left-col">
-          {/* Карта 1: Basic Information */}
+          {/* Basic Information */}
           <div className="card-box border-blue">
             <div className="card-head">
               <span className="title">Basic Information</span>
@@ -162,7 +248,7 @@ export default function EditModule() {
             </div>
           </div>
 
-          {/* Карта 2: Content Assignment */}
+          {/* Content Assignment */}
           <div className="card-box border-green">
             <div className="card-head between">
               <div className="left-title">
@@ -193,7 +279,7 @@ export default function EditModule() {
               {selectedQuestions.length === 0 ? (
                 <div className="empty-box">
                   <div className="empty-title">No questions assigned yet.</div>
-                       <div className="empty-sub">
+                  <div className="empty-sub">
                     Search and select questions from the bank to build your module.
                   </div>
                   <button type="button" className="bank-btn">Browse Full Bank</button>
@@ -201,11 +287,15 @@ export default function EditModule() {
               ) : (
                 <div className="question-list">
                   {selectedQuestions.map((q, idx) => (
-                    <div key={idx} className="table-row">
+                    <div key={q.id || idx} className="table-row">
                       <div className="c1">{idx + 1}</div>
-                      <div className="c2">{q.text}</div>
+                      <div className="c2">{q.question_text || q.text || 'Question Content'}</div>
                       <div className="c3">
-                        <button type="button" onClick={() => setSelectedQuestions(selectedQuestions.filter((_, i) => i !== idx))}>
+                        <button 
+                          type="button" 
+                          style={{ color: '#ef233c', background: 'none', border: 'none', cursor: 'pointer' }}
+                          onClick={() => handleDeleteQuestion(q.id, idx)}
+                        >
                           Remove
                         </button>
                       </div>
@@ -219,7 +309,7 @@ export default function EditModule() {
 
         {/* Правая колонка */}
         <div className="right-col">
-          {/* Карта 3: Configuration */}
+          {/* Configuration */}
           <div className="card-box border-red">
             <div className="card-head">
               <span className="title">Configuration</span>
@@ -275,7 +365,7 @@ export default function EditModule() {
             </div>
           </div>
 
-          {/* Карта 4: Access Settings */}
+          {/* Access Settings */}
           <div className="card-box border-teal">
             <div className="card-head">
               <span className="title">Access Settings</span>

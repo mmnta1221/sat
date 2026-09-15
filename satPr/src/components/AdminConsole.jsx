@@ -152,7 +152,7 @@ export default function AdminConsole() {
             filteredModules.map((item) => (
               <div className="row" key={item.id}>
                 <div className="w1">
-                  <div className="text-big">{item.title}</div>
+                 <button className='lala' onClick={() => navigate(`/admin/question-list?id=${item.id}`)}> <div className="text-big" >{item.title}</div> </button>
                   <div className="text-small">
                     ID: SAT-{item.category?.[0] || 'M'}-{String(item.id).padStart(3, '0')} • {new Date(item.created_at).toLocaleDateString()}
                   </div>
@@ -177,7 +177,7 @@ export default function AdminConsole() {
                 </div>
 
                 <div className="w6">
-                  <button className="btn-icon" onClick={() => navigate('/admin/edit-module')} >
+                  <button className="btn-icon" onClick={() => navigate(`/admin/edit-module?id=${item.id}`)} >
                     edit
                   </button>
                   <button className="btn-icon2" onClick={() => handleDelete(item.id, item.title)}>
@@ -195,7 +195,7 @@ export default function AdminConsole() {
       <button
         className="addModule"
         title="Создать модуль"
-        onClick={() => navigate('/admin/create-module')}
+        onClick={() => navigate('/admin/question-list')}
       >
         +
       </button>
