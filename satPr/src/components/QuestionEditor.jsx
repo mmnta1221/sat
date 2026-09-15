@@ -108,7 +108,7 @@ export default function QuestionEditor({ questionId = null, moduleId = 1, onSave
   return (
     <div className="block-admin">
       <div className="admin-header">
-        <h2>{questionId ? 'Редактировать вопрос' : 'Создать вопрос'}</h2>
+        <h2>Редактировать</h2>
         <button 
           className="btn-green" 
           onClick={handleSave} 
