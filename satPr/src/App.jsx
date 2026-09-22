@@ -13,6 +13,7 @@ import Login from './components/Login';
 import EditModule from "./components/EditModule" 
 import QuestionList from "./components/QuestionList"
 import QuestionCreate from './components/CreateQuestion';
+import QuizPractice from './components/QuizPractice';
 import './App.css';
 
 function AdminRoute({ children }) {
@@ -42,12 +43,14 @@ function MainLayout() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/practice" element={<PracticeCatalog />} />
             <Route path="/materials" element={<Materials />} />
+            <Route path="/QuizPractice" element={<QuizPractice />} />
             <Route path="/admin" element={<AdminRoute><AdminConsole /></AdminRoute>} />
             <Route path="/admin/editor" element={<AdminRoute><QuestionEditor /></AdminRoute>} />
             <Route path="/admin/create-module" element={<AdminRoute><CreateModule /></AdminRoute>} />
             <Route path="/admin/edit-module" element={<AdminRoute><EditModule /></AdminRoute>} />
             <Route path="/admin/question-list" element={<AdminRoute><QuestionList /></AdminRoute>} />
             <Route path="/admin/question-create" element={<AdminRoute><QuestionCreate /></AdminRoute>} />
+            
             
           </Routes>
         </div>

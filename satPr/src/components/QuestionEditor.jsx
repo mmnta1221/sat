@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import './QuestionEditor.scss';
 
-export default function QuestionEditor({ questionId = null, moduleId = 1, onSaveSuccess }) {
+export default function QuestionEditor({ questionId: propQuestionId = null, moduleId: propModuleId = null, onSaveSuccess }) {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // Считываем ID вопроса и модуля из props или URL (?id=...&moduleId=...)
+  const questionId = propQuestionId || searchParams.get('id');
+  const moduleId = propModuleId || searchParams.get('moduleId') || 1;
+
   const [formData, setFormData] = useState({
     question_text: '',
     option_a: '',
@@ -14,25 +22,27 @@ export default function QuestionEditor({ questionId = null, moduleId = 1, onSave
   });
 
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
-
+  // 📥 Загрузка данных редактируемого вопроса при наличии questionId
   useEffect(() => {
     if (questionId) {
-      fetchQuestion();
+      fetchQuestion(questionId);
     }
   }, [questionId]);
 
-  const fetchQuestion = async () => {
+  const fetchQuestion = async (qId) => {
     try {
-      setLoading(true);
+      setFetching(true);
       const { data, error } = await supabase
         .from('questions')
         .select('*')
-        .eq('id', questionId)
+        .eq('id', qId)
         .single();
 
       if (error) throw error;
+
       if (data) {
         setFormData({
           question_text: data.question_text || '',
@@ -45,9 +55,10 @@ export default function QuestionEditor({ questionId = null, moduleId = 1, onSave
         });
       }
     } catch (err) {
+      console.error('Ошибка загрузки вопроса:', err);
       setMessage({ type: 'error', text: `Ошибка загрузки: ${err.message}` });
     } finally {
-      setLoading(false);
+      setFetching(false);
     }
   };
 
@@ -56,6 +67,26 @@ export default function QuestionEditor({ questionId = null, moduleId = 1, onSave
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // 📊 Функция для синхронизации количества вопросов в таблице modules
+  const updateModuleQuestionCount = async (targetModuleId) => {
+    try {
+      const { count, error: countErr } = await supabase
+        .from('questions')
+        .select('*', { count: 'exact', head: true })
+        .eq('module_id', targetModuleId);
+
+      if (!countErr && count !== null) {
+        await supabase
+          .from('modules')
+          .update({ questions_count: count })
+          .eq('id', targetModuleId);
+      }
+    } catch (err) {
+      console.error('Не удалось обновить счетчик вопросов модуля:', err);
+    }
+  };
+
+  // 💾 Сохранение или обновление вопроса
   const handleSave = async () => {
     if (!formData.question_text.trim()) {
       setMessage({ type: 'error', text: 'Заполните текст вопроса!' });
@@ -67,7 +98,7 @@ export default function QuestionEditor({ questionId = null, moduleId = 1, onSave
 
     try {
       const payload = {
-        module_id: moduleId,
+        module_id: Number(moduleId),
         question_text: formData.question_text,
         option_a: formData.option_a,
         option_b: formData.option_b,
@@ -77,45 +108,75 @@ export default function QuestionEditor({ questionId = null, moduleId = 1, onSave
         explanation: formData.explanation
       };
 
-      let resultError;
-
       if (questionId) {
-        // Обновление существующего вопроса
+        // ОБНОВЛЕНИЕ вопроса
         const { error } = await supabase
           .from('questions')
           .update(payload)
           .eq('id', questionId);
-        resultError = error;
+
+        if (error) throw error;
+        setMessage({ type: 'success', text: 'Вопрос успешно обновлен!' });
       } else {
-        // Создание нового вопроса
+        // СОЗДАНИЕ нового вопроса
         const { error } = await supabase
           .from('questions')
           .insert([payload]);
-        resultError = error;
+
+        if (error) throw error;
+        
+        // Пересчитываем вопросы в модуле при добавлении нового
+        await updateModuleQuestionCount(Number(moduleId));
+
+        setMessage({ type: 'success', text: 'Вопрос успешно создан!' });
       }
 
-      if (resultError) throw resultError;
-
-      setMessage({ type: 'success', text: 'Вопрос успешно сохранен!' });
-      if (onSaveSuccess) onSaveSuccess();
+      if (onSaveSuccess) {
+        onSaveSuccess();
+      } else {
+        // Возврат к списку вопросов модуля через 1 секунду
+        setTimeout(() => {
+          navigate(`/admin/questions?id=${moduleId}`);
+        }, 1000);
+      }
     } catch (err) {
+      console.error('Ошибка сохранения вопроса:', err);
       setMessage({ type: 'error', text: `Ошибка сохранения: ${err.message}` });
     } finally {
       setLoading(false);
     }
   };
 
+  if (fetching) {
+    return (
+      <div style={{ padding: '40px', textAlign: 'center', color: '#8d99ae' }}>
+        Загрузка данных вопроса...
+      </div>
+    );
+  }
+
   return (
     <div className="block-admin">
       <div className="admin-header">
-        <h2>Редактировать</h2>
-        <button 
-          className="btn-green" 
-          onClick={handleSave} 
-          disabled={loading}
-        >
-          {loading ? 'Сохранение...' : 'Сохранить'}
-        </button>
+        <h2>{questionId ? `Редактировать вопрос #${questionId}` : 'Создать вопрос'}</h2>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button 
+            type="button" 
+            className="btn-secondary"
+            onClick={() => navigate(`/admin/questions?id=${moduleId}`)}
+            style={{ padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}
+          >
+            Назад к списку
+          </button>
+          <button 
+            type="button"
+            className="btn-green" 
+            onClick={handleSave} 
+            disabled={loading}
+          >
+            {loading ? 'Сохранение...' : 'Сохранить'}
+          </button>
+        </div>
       </div>
 
       {message.text && (
@@ -125,7 +186,7 @@ export default function QuestionEditor({ questionId = null, moduleId = 1, onSave
       )}
 
       <div className="grid-split">
-        {/* Карточка 1: Текст вопроса */}
+        {/* Текст вопроса */}
         <div className="card-1">
           <label>Текст вопроса</label>
           <textarea
@@ -137,7 +198,7 @@ export default function QuestionEditor({ questionId = null, moduleId = 1, onSave
           ></textarea>
         </div>
 
-        {/* Карточка 2: Варианты ответов */}
+        {/* Варианты ответов */}
         <div className="card-1">
           <label>Варианты ответов (отметьте правильный)</label>
           
@@ -218,7 +279,7 @@ export default function QuestionEditor({ questionId = null, moduleId = 1, onSave
           </div>
         </div>
 
-        {/* Карточка 3: Пояснение */}
+        {/* Пояснение */}
         <div className="card-2">
           <label>Пояснение к решению (Explanation)</label>
           <textarea
