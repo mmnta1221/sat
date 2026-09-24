@@ -1,7 +1,6 @@
 {
   "devDependencies": {
-    "sass": "^1.105.0",
-    "sass-embedded": "^1.100.0"
+    "sass": "^1.105.0"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.1",
